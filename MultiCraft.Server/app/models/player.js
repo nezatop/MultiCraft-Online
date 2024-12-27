@@ -7,4 +7,4 @@ class PlayerData {
     }
 }
 
-module.exports = { PlayerData };
+export { PlayerData };

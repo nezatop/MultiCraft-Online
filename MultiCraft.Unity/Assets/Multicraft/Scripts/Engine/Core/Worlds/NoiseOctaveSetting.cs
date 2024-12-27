@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Text.Json.Serialization;
+using UnityEngine;
 
 namespace MultiCraft.Scripts.Engine.Core.Worlds
 {
@@ -6,22 +7,22 @@ namespace MultiCraft.Scripts.Engine.Core.Worlds
     public class NoiseOctaveSetting
     {
         [Header("Noise Octave Settings")]
-        public FastNoiseLite.NoiseType NoiseType;
+        [JsonConverter(typeof(JsonStringEnumConverter))] public FastNoiseLite.NoiseType NoiseType;
         public float Frequency;
         public float Amplitude;
         
         [Header("Fractal")]
-        public FastNoiseLite.FractalType FractalType;
+        [JsonConverter(typeof(JsonStringEnumConverter))]public FastNoiseLite.FractalType FractalType;
         public int FractalOctaves;
         public float FractalGain;
 
         [Header("Cellular")] 
-        public FastNoiseLite.CellularDistanceFunction CellularDistanceFunction;
-        public FastNoiseLite.CellularReturnType CellularReturnType;
+        [JsonConverter(typeof(JsonStringEnumConverter))]public FastNoiseLite.CellularDistanceFunction CellularDistanceFunction;
+        [JsonConverter(typeof(JsonStringEnumConverter))]public FastNoiseLite.CellularReturnType CellularReturnType;
         public float CellularJitter;
 
         [Header("Domain Warp")]
-        public FastNoiseLite.DomainWarpType DomainWarpType;
+        [JsonConverter(typeof(JsonStringEnumConverter))]public FastNoiseLite.DomainWarpType DomainWarpType;
         public float DomainWarpAmplitude;
     }
 }

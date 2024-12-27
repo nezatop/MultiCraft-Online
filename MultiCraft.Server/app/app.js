@@ -1,12 +1,13 @@
-const WebSocket = require('ws');
-const express = require('express');
-const http = require('http');
-const cors = require('cors');
+import { WebSocketServer } from 'ws'; // Импортируем WebSocketServer
 
-const { loadPlayerData, savePlayerData, playerData} = require('./utils/storage');
-const { handleClientMessage, broadcast} = require('./routes/player');
-const { PORT } = require('./config');
-const {clients} = require("./utils/chunk");
+import express from 'express';
+import http from 'http';
+import cors from 'cors';
+
+import { loadPlayerData, savePlayerData, playerData } from './utils/storage.js';
+import { handleClientMessage, broadcast } from './routes/player.js';
+import { PORT } from './config.js';
+import { clients } from './utils/chunk.js';
 
 // Создаем приложение Express
 const app = express();
@@ -16,7 +17,7 @@ const server = http.createServer(app);
 app.use(cors());
 
 // Создаем сервер WebSocket
-const wss = new WebSocket.Server({ server });
+const wss = new WebSocketServer({ server }); // Используем WebSocketServer вместо WebSocket.Server
 
 // Обработка подключения клиентов
 wss.on('connection', (socket) => {
@@ -25,9 +26,8 @@ wss.on('connection', (socket) => {
     socket.on('message', (message) => {
         try {
             const data = JSON.parse(message);
-            if(data.type !== 'move')console.log(data);
-            socket.send(JSON.stringify({message: data.message}));
-            //handleClientMessage(data, socket);
+            if (data.type !== 'move') console.log(data);
+            handleClientMessage(data, socket);
         } catch (error) {
             console.error('Ошибка при обработке сообщения:', error);
         }

@@ -1,6 +1,4 @@
-const path = require('path');
+import path from 'path';
 
-module.exports = {
-    PORT: process.env.PORT || 8080,
-    JSON_FILE_PATH: path.join(__dirname, 'players.json'),
-};
+export const PORT = process.env.PORT || 8080;
+export const JSON_FILE_PATH = path.join(process.cwd(), 'players.json');

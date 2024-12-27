@@ -2804,7 +2804,7 @@ MonoBehaviour:
   enableLogging: 1
   playerPrefab: {fileID: 7258850639289370271, guid: 580690148ab0888489b16ba9bc9ab1df, type: 3}
   otherPlayerPrefab: {fileID: 4796965235788867141, guid: d283438db6db889439091a4cb97428ec, type: 3}
-  serverAddress: wss://ms-mult-5zhq.onrender.com
+  serverAddress: ws://localhost:8080
 --- !u!4 &911118144
 Transform:
   m_ObjectHideFlags: 0
@@ -3229,7 +3229,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -185.51999}
+  m_AnchoredPosition: {x: 0, y: -185.02063}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1066753004
@@ -4078,8 +4078,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 221795789}
   m_HandleRect: {fileID: 221795788}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 1
+  m_Value: 0
+  m_Size: 0.9848311
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -4242,8 +4242,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings:
-    viewDistanceInChunks: 1
-    loadDistance: 2
+    viewDistanceInChunks: 3
+    loadDistance: 4
   chunkPrefab: {fileID: 6950558421887607551, guid: a313ccba8d75ac74a84e6851abdc7ed5, type: 3}
   waterChunkPrefab: {fileID: 0}
   floraChunkPrefab: {fileID: 0}

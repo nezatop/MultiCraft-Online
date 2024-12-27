@@ -1,8 +1,19 @@
-const { playerData } = require('../utils/storage');
-const { clients, chunkMap, createChunk, getChunkIndex, getRandomSurfacePosition} = require('../utils/chunk');
-const {PlayerData} = require("../models/player");
+import { playerData } from '../utils/storage.js';
+import {
+    clients,
+    chunkMap,
+    floraChunkMap,
+    waterChunkMap,
+    createChunk,
+    getChunkIndex,
+    getRandomSurfacePosition,
+    createWaterChunk, createFloraChunk
+} from '../utils/chunk.js';
+import { PlayerData } from "../models/player.js";
+import {createInventory, getInventory, setInventory} from "../utils/inventory.js";
+import e from "express";
 
-function handleClientMessage(data, socket) {
+export function handleClientMessage(data, socket) {
     switch (data.type) {
         case 'connect':
             handleConnect(data, socket);
@@ -22,9 +33,27 @@ function handleClientMessage(data, socket) {
         case 'destroy_block':
             handleDestroyBlock(data.position, socket);
             break;
+        case 'get_inventory':
+            handleGetInventory(data.position, socket);
+            break;
+        case 'set_inventory':
+            handleSetInventory(data.position, data.inventory, socket);
+            break;
         default:
             console.log('Неизвестный тип сообщения:', data.type);
     }
+}
+
+function handleGetInventory(position, socket) {
+    const clientId = clients.get(socket);
+    if (clientId) {
+        const inventory = getInventory(position);
+        socket.send(JSON.stringify({ type: 'inventory', inventory: inventory }));
+    }
+}
+
+function handleSetInventory(position, inventory, socket) {
+    setInventory(position, inventory);
 }
 
 function handleConnect(data, socket) {
@@ -35,19 +64,19 @@ function handleConnect(data, socket) {
         console.log(`Клиент с логином ${login} повторно подключен.`);
         socket.send(JSON.stringify({
             type: 'connected',
-            message: 'Вы подключены с данными из JSON',
-            position: playerInfo.position
+            position: playerInfo.position,
+            inventory: playerInfo.inventory
         }));
     } else {
         console.log(`Новый клиент с логином ${login} подключен.`);
         const startPosition = getRandomSurfacePosition();
-        playerData.set(login, new PlayerData(login, password, startPosition));
+        playerData.set(login, new PlayerData(login, password, startPosition, { x: 0, y: 0, z: 0 }, []));
 
         socket.send(JSON.stringify({
             type: 'connected',
-            message: 'Соединение успешно установлено',
             position: startPosition,
-            rotation: { x: 0, y: 0, z: 0 } // Можно установить начальный поворот по умолчанию
+            rotation: { x: 0, y: 0, z: 0 },
+            inventory: null,
         }));
     }
 
@@ -70,24 +99,39 @@ function handlePlayers(socket) {
     }));
 }
 
-
 function handleGetChunk(position, socket) {
     const chunkKey = `${position.x},${position.y},${position.z}`;
-    if (chunkMap.has(chunkKey)) {
-        socket.send(JSON.stringify({
-            type: 'chunk_data',
-            position: position,
-            blocks: chunkMap.get(chunkKey),
-        }));
-    } else {
-        const newChunk = createChunk();
-        chunkMap.set(chunkKey, newChunk);
-        socket.send(JSON.stringify({
-            type: 'chunk_data',
-            position: position,
-            blocks: newChunk,
-        }));
+    let chunk;
+    let waterChunk;
+    let floraChunk;
+    if(chunkMap.has(chunkKey))
+        chunk = chunkMap.get(chunkKey);
+    else {
+        chunk = createChunk(position.x * 16, position.y * 256, position.z * 16);
+        chunkMap.set(chunkKey,chunk);
     }
+
+    if(waterChunkMap.has(chunkKey))
+        waterChunk = chunkMap.get(chunkKey);
+    else {
+        waterChunk = createWaterChunk(position.x * 16, position.y * 256, position.z * 16);
+        waterChunkMap.set(chunkKey,waterChunk);
+    }
+
+    if(floraChunkMap.has(chunkKey))
+        floraChunk = chunkMap.get(chunkKey);
+    else {
+        floraChunk = createFloraChunk(position.x * 16, position.y * 256, position.z * 16);
+        floraChunkMap.set(chunkKey,floraChunk);
+    }
+
+    socket.send(JSON.stringify({
+        type: 'chunk_data',
+        position: position,
+        blocks: chunk,
+        waterChunk: waterChunk,
+        floraChunk: floraChunk,
+    }));
 }
 
 function handleMove(position, socket) {
@@ -104,9 +148,9 @@ function updateBlock(position, blockType, socket) {
     if (chunkMap.has(chunkKey)) {
         const chunk = chunkMap.get(chunkKey);
         const chunkOrigin = {
-            x: chunkPosition.x * 16, // Умножаем на 16, чтобы получить мировые координаты чанка
-            y: chunkPosition.y * 16, // Умножаем на 16, чтобы получить мировые координаты чанка
-            z: chunkPosition.z * 16  // Умножаем на 16, чтобы получить мировые координаты чанка
+            x: chunkPosition.x * 16,
+            y: chunkPosition.y * 16,
+            z: chunkPosition.z * 16
         };
 
         const indexV3 = {
@@ -116,10 +160,14 @@ function updateBlock(position, blockType, socket) {
         };
 
         const index = indexV3.x + indexV3.z * 16 + indexV3.y * 16 * 16;
-        chunk[index] = blockType; // Устанавливаем тип блока
+        chunk[index] = blockType;
+
+        if(blockType === 1){
+            createInventory(position);
+        }
+
         chunkMap.set(chunkKey, chunk);
 
-        // Отправляем обновление блоков
         broadcast(JSON.stringify({ type: 'block_update', position: position, block_type: blockType }));
     }
 }
@@ -153,13 +201,10 @@ function getChunkContainingBlock(blockWorldPosition) {
     return chunkPosition;
 }
 
-function broadcast(data) {
+export function broadcast(data) {
     clients.forEach((_, client) => {
         if (client.readyState === WebSocket.OPEN) {
             client.send(data);
         }
     });
 }
-
-module.exports = { handleClientMessage,
-    broadcast,};

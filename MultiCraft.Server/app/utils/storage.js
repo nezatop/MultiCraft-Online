@@ -1,10 +1,10 @@
-const fs = require('fs');
-const { JSON_FILE_PATH } = require('../config');
-const { PlayerData } = require('../models/player');
+import fs from 'fs';
+import { JSON_FILE_PATH } from '../config.js';
+import { PlayerData } from '../models/player.js';
 
-const playerData = new Map();
+export const playerData = new Map();
 
-function loadPlayerData() {
+export function loadPlayerData() {
     if (fs.existsSync(JSON_FILE_PATH)) {
         const data = fs.readFileSync(JSON_FILE_PATH);
         const players = JSON.parse(data);
@@ -13,7 +13,8 @@ function loadPlayerData() {
                 player.login,
                 player.password,
                 player.position,
-                player.rotation
+                player.rotation,
+                player.inventory
             ));
         });
         console.log('Данные игроков успешно загружены.');
@@ -22,19 +23,14 @@ function loadPlayerData() {
     }
 }
 
-function savePlayerData() {
+export function savePlayerData() {
     const playersArray = Array.from(playerData.values()).map(data => ({
         login: data.login,
         password: data.password,
         position: data.position,
-        rotation: data.rotation
+        rotation: data.rotation,
+        inventory: data.inventory
     }));
     fs.writeFileSync(JSON_FILE_PATH, JSON.stringify(playersArray, null, 2));
     console.log('Данные игроков успешно сохранены.');
 }
-
-module.exports = {
-    playerData,
-    loadPlayerData,
-    savePlayerData,
-};
