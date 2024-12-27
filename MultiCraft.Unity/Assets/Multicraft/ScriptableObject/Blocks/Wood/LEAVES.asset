@@ -1,0 +1,32 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 295abb67d2cd4f358d71dd28af6f04e3, type: 3}
+  m_Name: LEAVES
+  m_EditorClassIdentifier: 
+  Id: 7
+  Name: 
+  ToolToDig: 0
+  MinToolLevelToDig: 0
+  Durability: 1
+  IsTransparent: 1
+  HaveInventory: 0
+  DropItem: {fileID: 11400000, guid: 02a5d8fd0877457429353c410e578834, type: 2}
+  Textures:
+  - {fileID: 2800000, guid: 84f1c2abcbb19cf4a8bc092f57b28ae5, type: 3}
+  - {fileID: 2800000, guid: 84f1c2abcbb19cf4a8bc092f57b28ae5, type: 3}
+  - {fileID: 2800000, guid: 84f1c2abcbb19cf4a8bc092f57b28ae5, type: 3}
+  - {fileID: 2800000, guid: 84f1c2abcbb19cf4a8bc092f57b28ae5, type: 3}
+  - {fileID: 2800000, guid: 84f1c2abcbb19cf4a8bc092f57b28ae5, type: 3}
+  - {fileID: 2800000, guid: 84f1c2abcbb19cf4a8bc092f57b28ae5, type: 3}
+  StepSound: {fileID: 0}
+  DigSound: {fileID: 0}
+  PlaceSound: {fileID: 0}

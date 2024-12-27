@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 295abb67d2cd4f358d71dd28af6f04e3, type: 3}
+  m_Name: SnowGrassBlock
+  m_EditorClassIdentifier: 
+  Id: 1204
+  Name: SnowGrassBlock
+  IsFlora: 0
+  ToolToDig: 0
+  MinToolLevelToDig: 0
+  Durability: 1
+  IsTransparent: 0
+  HaveInventory: 0
+  DropItem: {fileID: 11400000, guid: 98a46cff616956e4cae71f5d3a500ddb, type: 2}
+  Textures:
+  - {fileID: 2800000, guid: 6c0f83f20ea909a4cbe4e5b19a40847b, type: 3}
+  - {fileID: 2800000, guid: bf34a3e0bc12de74c95d288191b1ec7c, type: 3}
+  - {fileID: 2800000, guid: bf34a3e0bc12de74c95d288191b1ec7c, type: 3}
+  - {fileID: 2800000, guid: bf34a3e0bc12de74c95d288191b1ec7c, type: 3}
+  - {fileID: 2800000, guid: bf34a3e0bc12de74c95d288191b1ec7c, type: 3}
+  - {fileID: 2800000, guid: 32ef96d6bba81d842bc719c83620b6e4, type: 3}
+  StepSound: {fileID: 0}
+  DigSound: {fileID: 0}
+  PlaceSound: {fileID: 0}

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 295abb67d2cd4f358d71dd28af6f04e3, type: 3}
+  m_Name: Brich Log
+  m_EditorClassIdentifier: 
+  Id: 98
+  Name: Brich Log
+  IsFlora: 0
+  ToolToDig: 2
+  MinToolLevelToDig: 1
+  Durability: 3
+  IsTransparent: 0
+  HaveInventory: 0
+  DropItem: {fileID: 0}
+  Textures:
+  - {fileID: 2800000, guid: 4cc1cccf97df4cf478dc4bac78279bd7, type: 3}
+  - {fileID: 2800000, guid: 3524e9913f75dd64fac31e5adac7b3cd, type: 3}
+  - {fileID: 2800000, guid: 3524e9913f75dd64fac31e5adac7b3cd, type: 3}
+  - {fileID: 2800000, guid: 3524e9913f75dd64fac31e5adac7b3cd, type: 3}
+  - {fileID: 2800000, guid: 3524e9913f75dd64fac31e5adac7b3cd, type: 3}
+  - {fileID: 2800000, guid: 4cc1cccf97df4cf478dc4bac78279bd7, type: 3}
+  StepSound: {fileID: 0}
+  DigSound: {fileID: 0}
+  PlaceSound: {fileID: 0}

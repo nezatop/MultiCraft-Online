@@ -1,0 +1,179 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eab6088f584b4050b3e03c524af06dc5, type: 3}
+  m_Name: WorldGenerator
+  m_EditorClassIdentifier: 
+  BaseHeight: 64
+  WaterLevel: 63
+  RiverChance: -0.5
+  TreeFrequency: 0.5
+  Biomes:
+  - biomeName: Desert
+    offset: 0
+    scale: 0
+    terrainHeight: 0
+    terrainScale: 0
+    surfaceBlock: 9
+    subSurfaceBlock: 9
+    treeType: 17000000
+    leavesType: ffffffff
+    maxTreeHeight: 03000000
+    minTreeHeight: 01000000
+    treeChance: 3c000000
+    biomeChance: 0.161
+    fullFloraChance: 0
+    floraIndex: 0
+    floraZoneScale: 0
+    floraThreshold: 0.12
+    floraPlacementScale: 0
+    floraPlacementThreshold: 0.1
+    placeFlora: 0
+    floraId: 
+    floraChances: 
+    HeightMax: 0
+    HeightMin: 0
+    lodes: []
+    chances: 0
+  - biomeName: Forest
+    offset: 0
+    scale: 0
+    terrainHeight: 0
+    terrainScale: 0
+    surfaceBlock: 4
+    subSurfaceBlock: 3
+    treeType: 0500000062000000
+    leavesType: 0700000007000000
+    maxTreeHeight: 0700000007000000
+    minTreeHeight: 0500000005000000
+    treeChance: 6400000064000000
+    biomeChance: 1
+    fullFloraChance: 100
+    floraIndex: 0
+    floraZoneScale: 0
+    floraThreshold: 0.1
+    floraPlacementScale: 0
+    floraPlacementThreshold: 0.1
+    placeFlora: 1
+    floraId: 1b0000001c0000001d000000
+    floraChances: 500000000a0000000a000000
+    HeightMax: 0
+    HeightMin: 0
+    lodes: []
+    chances: 100
+  - biomeName: ForestSpruce
+    offset: 0
+    scale: 0
+    terrainHeight: 0
+    terrainScale: 0
+    surfaceBlock: 1204
+    subSurfaceBlock: 3
+    treeType: 63000000
+    leavesType: 42020000
+    maxTreeHeight: 09000000
+    minTreeHeight: 07000000
+    treeChance: 4b000000
+    biomeChance: 0.227
+    fullFloraChance: 1
+    floraIndex: 0
+    floraZoneScale: 0
+    floraThreshold: 0.1
+    floraPlacementScale: 0
+    floraPlacementThreshold: 0.1
+    placeFlora: 1
+    floraId: 2c020000
+    floraChances: 64000000
+    HeightMax: 0
+    HeightMin: 0
+    lodes: []
+    chances: 0
+  BiomeNoiseOctaves:
+    NoiseType: 2
+    Frequency: 0.007
+    Amplitude: 2
+    FractalType: 4
+    FractalOctaves: 6
+    FractalGain: 2.75
+    CellularDistanceFunction: 0
+    CellularReturnType: 0
+    CellularJitter: 1
+    DomainWarpType: 1
+    DomainWarpAmplitude: 4
+  FloraNoiseOctaves:
+    NoiseType: 3
+    Frequency: 4.56
+    Amplitude: 1
+    FractalType: 0
+    FractalOctaves: 0
+    FractalGain: 0
+    CellularDistanceFunction: 0
+    CellularReturnType: 0
+    CellularJitter: 0
+    DomainWarpType: 0
+    DomainWarpAmplitude: 0
+  TreeNoiseOctaves:
+  - NoiseType: 3
+    Frequency: 1.8
+    Amplitude: 2
+    FractalType: 0
+    FractalOctaves: 0
+    FractalGain: 0
+    CellularDistanceFunction: 0
+    CellularReturnType: 0
+    CellularJitter: 0
+    DomainWarpType: 0
+    DomainWarpAmplitude: 0
+  WaterNoiseOctaves:
+    NoiseType: 2
+    Frequency: 0.003
+    Amplitude: 4
+    FractalType: 2
+    FractalOctaves: 1
+    FractalGain: 0.5
+    CellularDistanceFunction: 1
+    CellularReturnType: 6
+    CellularJitter: 1
+    DomainWarpType: 0
+    DomainWarpAmplitude: 12
+  SurfaceNoiseOctaves:
+  - NoiseType: 1
+    Frequency: 0.012
+    Amplitude: 27.8
+    FractalType: 0
+    FractalOctaves: 0
+    FractalGain: 0
+    CellularDistanceFunction: 0
+    CellularReturnType: 0
+    CellularJitter: 0
+    DomainWarpType: 0
+    DomainWarpAmplitude: 0
+  - NoiseType: 1
+    Frequency: 0.02
+    Amplitude: 55
+    FractalType: 0
+    FractalOctaves: 0
+    FractalGain: 0
+    CellularDistanceFunction: 0
+    CellularReturnType: 0
+    CellularJitter: 0
+    DomainWarpType: 0
+    DomainWarpAmplitude: 0
+  - NoiseType: 3
+    Frequency: 1
+    Amplitude: 2
+    FractalType: 0
+    FractalOctaves: 0
+    FractalGain: 0
+    CellularDistanceFunction: 0
+    CellularReturnType: 0
+    CellularJitter: 0
+    DomainWarpType: 0
+    DomainWarpAmplitude: 0

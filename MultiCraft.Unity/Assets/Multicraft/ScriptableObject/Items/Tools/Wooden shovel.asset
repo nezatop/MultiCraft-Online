@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9f422504d9443409c45ee8656d7d5e3, type: 3}
+  m_Name: Wooden shovel
+  m_EditorClassIdentifier: 
+  Name: Wooden shovel
+  Icon: {fileID: 21300000, guid: 6a368298544d24149b1b5fe072d31a0e, type: 3}
+  Type: 1
+  MaxStackSize: 1
+  CraftRecipe:
+    Items:
+    - {fileID: 11400000, guid: b0619fcdba7a6e8409bba039740e6e63, type: 2}
+    - {fileID: 11400000, guid: 548c7fa47d75fa74fae7e0b80e6d382c, type: 2}
+    - {fileID: 11400000, guid: 548c7fa47d75fa74fae7e0b80e6d382c, type: 2}
+    Amount: 0
+  IsPlaceable: 0
+  BlockType: {fileID: 0}
+  MaxDurability: 64
+  Damage: 2
+  ToolType: 0
+  MiningLevel: 1
+  MiningMultiplier: 1.2
+  Defense: 0
+  ArmorSlot: 0
+  HungerRestoration: 0
+  Saturation: 0

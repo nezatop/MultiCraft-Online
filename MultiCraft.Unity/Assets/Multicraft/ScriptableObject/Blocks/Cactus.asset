@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 295abb67d2cd4f358d71dd28af6f04e3, type: 3}
+  m_Name: Cactus
+  m_EditorClassIdentifier: 
+  Id: 23
+  Name: Cactus
+  IsFlora: 0
+  ToolToDig: 0
+  MinToolLevelToDig: 0
+  Durability: 2
+  IsTransparent: 0
+  HaveInventory: 0
+  DropItem: {fileID: 11400000, guid: f7b99138031f9fa4f803f5f02daf6897, type: 2}
+  Textures:
+  - {fileID: 2800000, guid: dd609c9e4e89191498b65c3aa43560ec, type: 3}
+  - {fileID: 2800000, guid: c1249438f612c2140b12b14c1426c398, type: 3}
+  - {fileID: 2800000, guid: c1249438f612c2140b12b14c1426c398, type: 3}
+  - {fileID: 2800000, guid: c1249438f612c2140b12b14c1426c398, type: 3}
+  - {fileID: 2800000, guid: c1249438f612c2140b12b14c1426c398, type: 3}
+  - {fileID: 2800000, guid: dd609c9e4e89191498b65c3aa43560ec, type: 3}
+  StepSound: {fileID: 0}
+  DigSound: {fileID: 0}
+  PlaceSound: {fileID: 0}

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1045 &1
+EditorBuildSettings:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Multicraft/Scenes/Multiplay.unity
+    guid: 7c909d371dd0ff94db259ca098a957a1
+  - enabled: 1
+    path: Assets/Multicraft/Scenes/Boot.unity
+    guid: 5b5dc7f18a46d5d419e79eeef07af4cc
+  - enabled: 1
+    path: Assets/Multicraft/Scenes/Loading.unity
+    guid: 5c4c83fb4e82702489ae0756d791208e
+  - enabled: 1
+    path: Assets/Multicraft/Scenes/MainMenu.unity
+    guid: d637c06d04f0ef841b6065e45fdfb373
+  - enabled: 1
+    path: Assets/Multicraft/Scenes/Gameplay.unity
+    guid: 622a16a822c78cd4d9e3590bbcfa065b
+  m_configObjects:
+    com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
+  m_UseUCBPForAssetBundles: 0

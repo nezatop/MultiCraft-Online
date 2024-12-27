@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 295abb67d2cd4f358d71dd28af6f04e3, type: 3}
+  m_Name: SpruceLog
+  m_EditorClassIdentifier: 
+  Id: 99
+  Name: SpruceLog
+  IsFlora: 0
+  ToolToDig: 0
+  MinToolLevelToDig: 0
+  Durability: 3
+  IsTransparent: 0
+  HaveInventory: 0
+  DropItem: {fileID: 11400000, guid: 8a0730a4dc8b76e4dae4cfbb8446d427, type: 2}
+  Textures:
+  - {fileID: 2800000, guid: 9269c37a7e467544ab65f131b49e3013, type: 3}
+  - {fileID: 2800000, guid: 6ea86c7c6c369244192e7ae663ddb2c0, type: 3}
+  - {fileID: 2800000, guid: 6ea86c7c6c369244192e7ae663ddb2c0, type: 3}
+  - {fileID: 2800000, guid: 6ea86c7c6c369244192e7ae663ddb2c0, type: 3}
+  - {fileID: 2800000, guid: 6ea86c7c6c369244192e7ae663ddb2c0, type: 3}
+  - {fileID: 2800000, guid: 9269c37a7e467544ab65f131b49e3013, type: 3}
+  StepSound: {fileID: 0}
+  DigSound: {fileID: 0}
+  PlaceSound: {fileID: 0}
