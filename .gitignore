@@ -1,0 +1,7 @@
+# Исключить настройки IDE IntelliJ IDEA
+.idea/
+
+# Исключить папку ИмяПроекта.clone_n
+*.clone_*/
+
+*.Builds/
