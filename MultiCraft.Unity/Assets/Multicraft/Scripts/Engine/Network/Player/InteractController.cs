@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using MultiCraft.Scripts.Engine.Core.Player;
 using MultiCraft.Scripts.Engine.UI;
@@ -21,6 +22,10 @@ namespace MultiCraft.Scripts.Engine.Network.Player
         {
             _inputSystem = new InputSystem_Actions();
             _inputSystem.Enable();
+            
+            
+            _inputSystem.Player.Enable();
+            _inputSystem.UI.Enable();
         }
 
         private void OnEnable()
@@ -32,7 +37,15 @@ namespace MultiCraft.Scripts.Engine.Network.Player
         private void OnDisable()
         {
             _inputSystem.Player.OpenChat.performed -= OpenChat;
-            _inputSystem.Player.OpenInventory.performed -= OpenInventory;
+            _inputSystem.Player.OpenInventory.performed -= OpenInventory;  
+        }
+
+        private void OnDestroy()
+        {
+            _inputSystem.Player.Disable();
+            _inputSystem.UI.Disable();
+            
+            _inputSystem.Disable();
         }
 
         public void EnableScripts()

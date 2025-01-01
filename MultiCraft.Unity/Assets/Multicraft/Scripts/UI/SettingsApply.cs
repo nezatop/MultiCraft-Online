@@ -21,7 +21,6 @@ namespace MultiCraft.Scripts.UI
         private const string EnvironmentVolumeParam = "Enviroment";
         private void Start()
         {
-            // Инициализация слайдеров текущими значениями громкости
             if (masterVolumeSlider != null)
             {
                 masterVolumeSlider.value = GetMixerVolume(MasterVolumeParam);
@@ -45,6 +44,12 @@ namespace MultiCraft.Scripts.UI
                 environmentVolumeSlider.value = GetMixerVolume(EnvironmentVolumeParam);
                 environmentVolumeSlider.onValueChanged.AddListener(SetEnvironmentVolume);
             }
+            
+            
+            masterVolumeSlider.value = 0.7f;
+            musicVolumeSlider.value = 0.7f;
+            soundVolumeSlider.value = 0.7f;
+            environmentVolumeSlider.value = 0.7f;
         }
         private void SetMasterVolume(float volume)
         {

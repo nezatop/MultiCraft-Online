@@ -1,4 +1,4 @@
-import { playerData } from '../utils/storage.js';
+import {playerData} from '../utils/storage.js';
 import {
     clients,
     chunkMap,
@@ -9,9 +9,8 @@ import {
     getRandomSurfacePosition,
     createWaterChunk, createFloraChunk
 } from '../utils/chunk.js';
-import { PlayerData } from "../models/player.js";
-import {createInventory, getInventory, setInventory} from "../utils/inventory.js";
-import e from "express";
+import {PlayerData} from "../models/player.js";
+import {addInventory, createInventory, getInventory, setInventory} from "../utils/inventory.js";
 
 export function handleClientMessage(data, socket) {
     switch (data.type) {
@@ -39,16 +38,31 @@ export function handleClientMessage(data, socket) {
         case 'set_inventory':
             handleSetInventory(data.position, data.inventory, socket);
             break;
+        case 'pickup_item':
+            handleSetInventory(data.item, socket);
+            break;
+        case 'disconnect':
+            handleSetInventory(data.item, socket);
+            break;
+
+        case 'chat':
+            handleChat(data.player, data.chat_massage, socket);
+            break;
+
         default:
-            console.log('Неизвестный тип сообщения:', data.type);
     }
 }
+
+function handleChat(player, chat_massage, socket) {
+    broadcast(JSON.stringify({type: 'chat', player_id: player, chat_massage: chat_massage}));
+}
+
 
 function handleGetInventory(position, socket) {
     const clientId = clients.get(socket);
     if (clientId) {
         const inventory = getInventory(position);
-        socket.send(JSON.stringify({ type: 'inventory', inventory: inventory }));
+        socket.send(JSON.stringify({type: 'inventory', position: position, inventory: inventory}));
     }
 }
 
@@ -57,41 +71,37 @@ function handleSetInventory(position, inventory, socket) {
 }
 
 function handleConnect(data, socket) {
-    const { login, password } = data;
+    const {login, password} = data;
 
     if (playerData.has(login)) {
         const playerInfo = playerData.get(login);
-        console.log(`Клиент с логином ${login} повторно подключен.`);
         socket.send(JSON.stringify({
             type: 'connected',
             position: playerInfo.position,
+            rotation: playerInfo.rotation,
             inventory: playerInfo.inventory
         }));
     } else {
-        console.log(`Новый клиент с логином ${login} подключен.`);
         const startPosition = getRandomSurfacePosition();
-        playerData.set(login, new PlayerData(login, password, startPosition, { x: 0, y: 0, z: 0 }, []));
+        playerData.set(login, new PlayerData(login, password, startPosition, {x: 0, y: 0, z: 0}));
 
         socket.send(JSON.stringify({
             type: 'connected',
             position: startPosition,
-            rotation: { x: 0, y: 0, z: 0 },
-            inventory: null,
+            rotation: {x: 0, y: 0, z: 0},
+            inventory: createInventory(),
         }));
     }
 
     clients.set(socket, login);
-    broadcast(JSON.stringify({ type: 'player_connected', player_id: login, position: playerData.get(login).position }));
+    broadcast(JSON.stringify({type: 'player_connected', player_id: login, position: playerData.get(login).position}));
 }
 
 function handlePlayers(socket) {
-    console.log('Подключенные игроки:');
     const playersArray = Array.from(playerData.values()).map(data => ({
         player_id: data.login,
         position: data.position
     }));
-
-    console.log(JSON.stringify(playersArray, null, 2));
 
     socket.send(JSON.stringify({
         type: 'players_list',
@@ -104,25 +114,25 @@ function handleGetChunk(position, socket) {
     let chunk;
     let waterChunk;
     let floraChunk;
-    if(chunkMap.has(chunkKey))
+    if (chunkMap.has(chunkKey))
         chunk = chunkMap.get(chunkKey);
     else {
         chunk = createChunk(position.x * 16, position.y * 256, position.z * 16);
-        chunkMap.set(chunkKey,chunk);
+        chunkMap.set(chunkKey, chunk);
     }
 
-    if(waterChunkMap.has(chunkKey))
-        waterChunk = chunkMap.get(chunkKey);
+    if (waterChunkMap.has(chunkKey))
+        waterChunk = waterChunkMap.get(chunkKey);
     else {
         waterChunk = createWaterChunk(position.x * 16, position.y * 256, position.z * 16);
-        waterChunkMap.set(chunkKey,waterChunk);
+        waterChunkMap.set(chunkKey, waterChunk);
     }
 
-    if(floraChunkMap.has(chunkKey))
-        floraChunk = chunkMap.get(chunkKey);
+    if (floraChunkMap.has(chunkKey))
+        floraChunk = floraChunkMap.get(chunkKey);
     else {
         floraChunk = createFloraChunk(position.x * 16, position.y * 256, position.z * 16);
-        floraChunkMap.set(chunkKey,floraChunk);
+        floraChunkMap.set(chunkKey, floraChunk);
     }
 
     socket.send(JSON.stringify({
@@ -139,7 +149,7 @@ function handleMove(position, socket) {
     if (clientId && playerData.has(clientId)) {
         playerData.get(clientId).position = position;
     }
-    broadcast(JSON.stringify({ type: 'player_moved', player_id: clientId, position: position }));
+    broadcast(JSON.stringify({type: 'player_moved', player_id: clientId, position: position}));
 }
 
 function updateBlock(position, blockType, socket) {
@@ -162,13 +172,13 @@ function updateBlock(position, blockType, socket) {
         const index = indexV3.x + indexV3.z * 16 + indexV3.y * 16 * 16;
         chunk[index] = blockType;
 
-        if(blockType === 1){
-            createInventory(position);
+        if (blockType === 15) {
+            addInventory(position);
         }
 
         chunkMap.set(chunkKey, chunk);
 
-        broadcast(JSON.stringify({ type: 'block_update', position: position, block_type: blockType }));
+        broadcast(JSON.stringify({type: 'block_update', position: position, block_type: blockType}));
     }
 }
 
@@ -202,6 +212,7 @@ function getChunkContainingBlock(blockWorldPosition) {
 }
 
 export function broadcast(data) {
+    console.log('[Server] Send data for all players', data);
     clients.forEach((_, client) => {
         if (client.readyState === WebSocket.OPEN) {
             client.send(data);

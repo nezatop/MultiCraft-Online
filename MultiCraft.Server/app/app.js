@@ -19,14 +19,15 @@ app.use(cors());
 // Создаем сервер WebSocket
 const wss = new WebSocketServer({ server }); // Используем WebSocketServer вместо WebSocket.Server
 
+loadPlayerData();
+
 // Обработка подключения клиентов
 wss.on('connection', (socket) => {
-    console.log('Клиент подключен');
 
     socket.on('message', (message) => {
         try {
             const data = JSON.parse(message);
-            if (data.type !== 'move') console.log(data);
+            console.log(`[SERVER]Received massage ${JSON.stringify(data)}`);
             handleClientMessage(data, socket);
         } catch (error) {
             console.error('Ошибка при обработке сообщения:', error);
@@ -35,14 +36,12 @@ wss.on('connection', (socket) => {
 
     socket.on('close', () => {
         const clientId = clients.get(socket);
-        console.log(`Клиент с ID ${clientId} отключен`);
 
         if (clientId) {
             const playerInfo = playerData.get(clientId);
             if (playerInfo) {
-                console.log(`Данные игрока ${clientId}:`, playerInfo);
+                savePlayerData();
                 playerData.delete(clientId);
-                savePlayerData(); // Сохраняем данные отключенных игроков
             }
         }
         broadcast(JSON.stringify({ type: 'player_disconnected', player_id: clientId }));
@@ -50,7 +49,6 @@ wss.on('connection', (socket) => {
     });
 });
 
-// Запуск сервера
 server.listen(PORT, () => {
-    console.log(`Сервер запущен на порту ${PORT}`);
+    console.log(`[SERVER] Start on port ${PORT}`);
 });

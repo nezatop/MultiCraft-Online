@@ -14,12 +14,18 @@ namespace MultiCraft.Scripts.UI
             CloseAllPanels();
         }
 
-        public void StartGame()
+        public void StartSingleGame()
+        {
+            SceneManager.LoadScene("Boot");
+            SceneManager.LoadScene("Gameplay");
+        }
+        
+        public void StartMultiGame()
         {
             if (ProfilePanel.Auth)
             {
                 SceneManager.LoadScene("Boot");
-                SceneManager.LoadScene("Gameplay");
+                SceneManager.LoadScene("Multiplayer");
             }
             else
             {

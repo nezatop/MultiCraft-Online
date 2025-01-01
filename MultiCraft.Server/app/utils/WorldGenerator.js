@@ -234,6 +234,7 @@ export const worldGeneratorConfig = {
         }
     ]
 }
+
 export class WorldGenerator {
     constructor(config, seed) {
         this.config = config;
@@ -274,7 +275,7 @@ export class WorldGenerator {
     }
 
     generate(xOffset, zOffset) {
-        const dimensions = { width: 16, height: 256, depth: 16 };
+        const dimensions = {width: 16, height: 256, depth: 16};
         const blocks = new Array(dimensions.width * dimensions.height * dimensions.depth).fill(0);
         const surfaceHeights = this.generateSurface(blocks, xOffset, zOffset);
         this.generateTrees(blocks, surfaceHeights, xOffset, zOffset);
@@ -403,5 +404,66 @@ export class WorldGenerator {
 
     getRandomInRange(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    generateWater(offsetX, offsetZ) {
+        const blocks = new Array(16 * 256 * 16).fill(0);
+
+        for (let x = 0; x < 16; x++) {
+            for (let z = 0; z < 16; z++) {
+                const waterChance = this.waterNoise.GetNoise(x + offsetX, z + offsetZ);
+                let height = this.getHeight(x + offsetX, z + offsetZ);
+
+                if (waterChance > this.config.RiverChance) {
+                    height -= waterChance * this.config.WaterNoiseOctaves.Amplitude;
+                }
+
+                for (let y = Math.floor(height); y <= this.config.WaterLevel; y++) {
+                    blocks[this.index3DTo1D(x, y, z)] = -1;
+                }
+            }
+        }
+
+        return blocks;
+
+    }
+
+    generateFlora(offsetX, offsetZ) {
+        const blocks = new Array(16 * 256 * 16).fill(0);
+
+        for (let x = 0; x < 16; x++) {
+            for (let z = 0; z < 16; z++) {
+                const biome = this.getBiome(x + offsetX, z + offsetZ);
+
+                const waterChance = this.waterNoise.GetNoise(x + offsetX, z + offsetZ);
+                let height = this.getHeight(x + offsetX, z + offsetZ);
+                if (waterChance > this.config.RiverChance) {
+                    height -= waterChance * this.config.WaterNoiseOctaves.Amplitude;
+                }
+
+                const floraChance = this.floraNoise.GetNoise(x + offsetX, z + offsetZ);
+                if (floraChance <= 0 && biome.placeFlora && Math.floor(height) > this.config.WaterLevel) {
+                    let floraIndex = 27;
+                    const floraChances = biome.chances;
+                    let fc = 0;
+                    const currentFloraChance = Math.floor(Math.random() * floraChances);
+                    const currentFloraChance2 = Math.floor(Math.random() * floraChances);
+
+                    for (let i = 0; i < biome.floraId.length; i++) {
+                        fc += biome.floraChances[i];
+                        if (fc >= currentFloraChance) {
+                            floraIndex = biome.floraId[i];
+                            break;
+                        }
+                    }
+
+                    if (currentFloraChance2 <= biome.fullFloraChance) {
+                        blocks[this.index3DTo1D(x, (Math.floor(height)), z)] = biome.placeFlora ? floraIndex : 0;
+                    }
+                }
+            }
+        }
+
+        return blocks;
     }
 }

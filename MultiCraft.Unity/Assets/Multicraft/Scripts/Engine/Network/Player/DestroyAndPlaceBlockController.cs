@@ -93,7 +93,7 @@ namespace MultiCraft.Scripts.Engine.Network.Player
 
             if (Input.GetMouseButtonDown(1))
             {
-                //if (TryOpenBlock()) return;
+                if (TryOpenBlock()) return;
             }
 
             if (Input.GetMouseButton(1))
@@ -117,7 +117,7 @@ namespace MultiCraft.Scripts.Engine.Network.Player
                 _isAnimating = true;
             }
 
-            if (Input.GetMouseButtonUp(0)) // Отпускание ЛКМ
+            if (Input.GetMouseButtonUp(0))
             {
                 _isBreaking = false;
                 handAnimationController.StopBreakingAnimation();
@@ -130,7 +130,7 @@ namespace MultiCraft.Scripts.Engine.Network.Player
                 {
                     if (_isAnimating == false)
                         handAnimationController.StartBreakingAnimation();
-                    TryDestroyBlock(); // Продолжать ломать блок
+                    TryDestroyBlock();
                 }
             }
             else if (Input.GetMouseButtonUp(0))
@@ -146,15 +146,18 @@ namespace MultiCraft.Scripts.Engine.Network.Player
             if (!Physics.Raycast(transform.position, transform.forward, out var hitInfo, 5f, mobLayer)) return false;
             GameObject hitObject = hitInfo.collider.gameObject;
 
-            // Выводим информацию о попадании
             Debug.Log($"Hit object: {hitObject.name}");
 
-            // Здесь можно добавить логику атаки, если объект является мобом или врагом
-            // Например:
             var Mob = hitObject.GetComponent<Mob>();
             if (Mob != null)
             {
                 StartCoroutine(Mob.TakeDamage(1, -hitInfo.normal));
+            }
+            
+            var otherPlayer = hitObject.GetComponent<OtherNetPlayer>();
+            if (otherPlayer != null)
+            {
+                NetworkManager.instance.ServerMassageAttack(1, otherPlayer.playerName);
             }
 
             return true;
@@ -184,7 +187,7 @@ namespace MultiCraft.Scripts.Engine.Network.Player
                 _nextPlaceTime = Time.time + placeDelay;
             }
         }
-/*
+
         private bool TryOpenBlock()
         {
             if (!Physics.Raycast(transform.position, transform.forward, out var hitInfo, 5f, worldLayer)) return false;
@@ -194,15 +197,14 @@ namespace MultiCraft.Scripts.Engine.Network.Player
             var block = NetworkWorld.instance.GetBlockAtPosition(blockPosition);
             if (block.HaveInventory)
             {
-                UiManager.Instance.OpenCloseChest(NetworkWorld.instance.GetInventory(blockPosition),
-                    Vector3Int.FloorToInt(blockPosition));
+                NetworkWorld.instance.GetInventory(Vector3Int.FloorToInt(blockPosition));
                 GetComponentInParent<InteractController>().DisableScripts();
                 return true;
             }
 
             return false;
         }
-*/
+
         private void TryDestroyBlock()
         {
             if (!Physics.Raycast(transform.position, transform.forward, out var hitInfo, 5f, worldLayer)) return;

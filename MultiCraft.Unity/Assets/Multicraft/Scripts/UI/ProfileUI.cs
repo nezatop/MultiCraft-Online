@@ -12,23 +12,24 @@ namespace MultiCraft.Scripts.UI
         public GameObject LoginWindow;
         public GameObject Authorized;
         public GameObject ChangeData;
-        
+
         public TMP_Text Username;
-        
+        public TMP_Text MainMenuUsername;
+
         public Login login;
         public Registration registration;
         public ChangeData changeData;
-        
+
         public bool Auth = false;
         private UserData userData;
-        
+
         private void OnEnable()
         {
             login.OnLoginSuccess += OpenAuthorizedWindow;
             login.OnLoginSuccess += SuccessfullyAuthorized;
             registration.OnRegisterSuccess += OpenAuthorizedWindow;
             registration.OnRegisterSuccess += SuccessfullyAuthorized;
-            
+
             if (!Auth)
                 OpenLoginWindow();
             else
@@ -37,6 +38,14 @@ namespace MultiCraft.Scripts.UI
 
         private void SuccessfullyAuthorized()
         {
+            string jsonData = JsonUtility.ToJson(userData);
+
+            // Сохраняем JSON-строку в PlayerPrefs
+            PlayerPrefs.SetString("UserData", jsonData);
+            PlayerPrefs.Save();
+
+            // Выводим для проверки
+            Debug.Log($"UserData сохранено: {jsonData}");
             Auth = true;
         }
 
@@ -67,6 +76,7 @@ namespace MultiCraft.Scripts.UI
         public void OpenAuthorizedWindow()
         {
             Username.text = userData.username;
+            MainMenuUsername.text = userData.username;
             RegisterWindow.SetActive(false);
             LoginWindow.SetActive(false);
             Authorized.SetActive(true);

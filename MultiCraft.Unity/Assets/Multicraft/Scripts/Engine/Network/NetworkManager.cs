@@ -1,49 +1,74 @@
 using UnityEngine;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.Json;
+using MultiCraft.Scripts.Engine.Core.Inventories;
 using MultiCraft.Scripts.Engine.Core.Player;
+using MultiCraft.Scripts.Engine.Network.Player;
 using MultiCraft.Scripts.Engine.Network.Worlds;
 using MultiCraft.Scripts.Engine.UI;
+using MultiCraft.Scripts.Engine.Utils;
+using MultiCraft.Scripts.UI.Authorize;
+using UnityEngine.SceneManagement;
 using UnityWebSocket;
 
 namespace MultiCraft.Scripts.Engine.Network
 {
     public class NetworkManager : MonoBehaviour
     {
-        public static NetworkManager Instance { get; private set; }
+        #region Parametrs
 
-        [Header("Debug Settings")] public bool enableLogging = true; // Флаг для включения/отключения логирования
+        public static NetworkManager instance { get; private set; }
+
+        [Header("Debug Settings")] public bool enableLogging = true;
 
         public GameObject playerPrefab;
-        public GameObject otherPlayerPrefab;
-        private Dictionary<string, GameObject> _otherPlayers = new Dictionary<string, GameObject>();
+        public OtherNetPlayer otherPlayerPrefab;
+        private Dictionary<string, OtherNetPlayer> _otherPlayers;
 
         public string serverAddress = "wss://ms-mult.onrender.com";
 
         private WebSocket _webSocket;
 
-        private string _playerName;
+        public string playerName;
         private string _playerPassword;
 
         private GameObject _player;
         private Vector3 _playerPosition;
-        private Coroutine moveCoroutine;
 
         private int _chunksToLoad;
 
+        private ConcurrentQueue<Vector3Int> _chunks;
+        private bool _spawnChunks;
+
+        #endregion
+        
+        #region Initialization
+
         private void Start()
         {
-            Instance = this;
+            instance = this;
 
-            _playerName = Guid.NewGuid().ToString();
-            _playerPassword = Guid.NewGuid().ToString();
-            
-            string jsonMessage = JsonSerializer.Serialize(new { type = "connect", login = _playerName, password = _playerPassword });
-            Debug.Log(jsonMessage);
-            Debug.Log(Encoding.UTF8.GetBytes(jsonMessage).ToString());
+            NetworkWorld.instance.RenderAllChunks += OnAllChunksLoaded;
+
+            _chunks = new ConcurrentQueue<Vector3Int>();
+            _otherPlayers = new Dictionary<string, OtherNetPlayer>();
+
+            if (PlayerPrefs.HasKey("UserData"))
+            {
+                string jsonData = PlayerPrefs.GetString("UserData");
+                var userData = JsonUtility.FromJson<UserData>(jsonData);
+                playerName = userData.username;
+                _playerPassword = userData.password;
+            }
+            else
+            {
+                playerName = Guid.NewGuid().ToString();
+                _playerPassword = Guid.NewGuid().ToString();
+            }
 
             _webSocket = new WebSocket(serverAddress);
 
@@ -51,24 +76,7 @@ namespace MultiCraft.Scripts.Engine.Network
             _webSocket.OnClose += OnClose;
             _webSocket.OnMessage += OnMessage;
             _webSocket.OnError += OnError;
-            /*
-            _webSocket.OnOpen += () =>
-            {
-                LogDebug("[Client] WebSocket connection opened.");
-                SendMessageToServer(new { type = "connect", login = _playerName, password = _playerPassword });
-            };
 
-            _webSocket.OnMessage += (messageBytes) =>
-            {
-                string message = Encoding.UTF8.GetString(messageBytes);
-                //LogDebug($"[Client] Received message: {message}");
-                HandleServerMessage(message);
-            };
-
-            _webSocket.OnClose += (e) => { LogDebug($"[Client] Connection closed. Reason: {e}"); };
-
-            _webSocket.OnError += (e) => { LogError($"[Client] Error: {e}"); };
-*/
             _webSocket.ConnectAsync();
         }
 
@@ -80,20 +88,46 @@ namespace MultiCraft.Scripts.Engine.Network
         private void OnMessage(object sender, MessageEventArgs e)
         {
             string message = Encoding.UTF8.GetString(e.RawData);
-            //LogDebug($"[Client] Received message: {message}");
+            //LogDebug($"[MassageFromServer] {message}");
             HandleServerMessage(message);
         }
 
         private void OnClose(object sender, CloseEventArgs e)
         {
+            SceneManager.LoadScene("MainMenu");
             LogDebug($"[Client] Connection closed. Reason: {e}");
         }
 
         private void OnOpen(object sender, OpenEventArgs e)
         {
             LogDebug("[Client] WebSocket connection opened.");
-            SendMessageToServer(new { type = "connect", login = _playerName, password = _playerPassword });
+            SendMessageToServer(new { type = "connect", login = playerName, password = _playerPassword });
         }
+
+        private void OnApplicationQuit()
+        {
+            _webSocket?.CloseAsync();
+        }
+
+        #endregion
+
+        private void Update()
+        {
+            if (!_spawnChunks) return;
+
+            if (_chunks.TryDequeue(out var chunkCoord))
+            {
+                StartCoroutine(NetworkWorld.instance.RenderChunks(chunkCoord));
+                StartCoroutine(NetworkWorld.instance.RenderWaterChunks(chunkCoord));
+                StartCoroutine(NetworkWorld.instance.RenderFloraChunks(chunkCoord));
+            }
+            else
+            {
+                NetworkWorld.instance.canSpawnPlayer = true;
+            }
+        }
+
+        #region HandleServerMessage
 
         private void HandleServerMessage(string data)
         {
@@ -102,58 +136,53 @@ namespace MultiCraft.Scripts.Engine.Network
                 var message = JsonDocument.Parse(data);
                 var type = message.RootElement.GetProperty("type").GetString();
 
-                if (type != "player_moved")
-                    LogDebug($"[Client] Handling message of type: {type}\nmessage:{message.RootElement.ToString()}");
-
-
                 switch (type)
                 {
                     case "connected":
-                        LogDebug($"[Client] Player connected: {_playerName}");
                         OnConnected(message.RootElement);
                         SendMessageToServer(new { type = "get_players" });
                         break;
 
+                    case "damage":
+                        HandleDamage(message.RootElement);
+                        break;
+                    
                     case "player_connected":
-                        LogDebug("[Client] A new player connected.");
                         OnPlayerConnected(message.RootElement);
                         break;
 
                     case "player_moved":
-                        //LogDebug("[Client] Player moved.");
                         OnPlayerMoved(message.RootElement);
                         break;
 
                     case "player_disconnected":
-                        LogDebug("[Client] A player disconnected.");
                         OnPlayerDisconnected(message.RootElement);
                         break;
 
                     case "players_list":
-                        LogDebug("[Client] Received players list.");
                         OnPlayersListReceived(message.RootElement);
                         break;
 
                     case "chunk_data":
-                        LogDebug("[Client] Received chunk data.");
                         HandleChunkData(message.RootElement);
                         break;
 
                     case "player_update":
-                        LogDebug("[Client] Player update received.");
                         HandlePlayerUpdate(message.RootElement);
                         break;
 
                     case "block_update":
-                        LogDebug("[Client] Block update received.");
                         HandleBlockUpdate(message.RootElement);
                         break;
 
-                    case "event":
-                        LogDebug("[Client] Event received.");
-                        HandleEvent(message.RootElement);
+                    case "inventory":
+                        HandleInventoryGet(message.RootElement);
                         break;
 
+                    case "chat":
+                        HandleChat(message.RootElement);
+                        break;
+                    
                     default:
                         LogWarning($"[Client] Unknown message type: {type}");
                         break;
@@ -165,11 +194,15 @@ namespace MultiCraft.Scripts.Engine.Network
             }
         }
 
+        #endregion
+
+        #region Handleplayers
+
         private void OnConnected(JsonElement data)
         {
             Vector3 position = JsonToVector3Safe(data, "position");
-            LogDebug($"[Client] Spawned player at position {position}");
             _playerPosition = position;
+            NetworkWorld.instance.currentPosition = Vector3Int.FloorToInt(_playerPosition);
             RequestChunksInView(position);
         }
 
@@ -177,11 +210,14 @@ namespace MultiCraft.Scripts.Engine.Network
         {
             string playerId = data.GetProperty("player_id").GetString();
             Vector3 position = JsonToVector3(data.GetProperty("position"));
+            
+            UiManager.Instance.ChatWindow.commandReader.PrintLog($"{playerId}: Зашел на сервер");
 
-            if (!_otherPlayers.ContainsKey(playerId) && playerId != _playerName)
+            if (playerId != null && !_otherPlayers.ContainsKey(playerId) && playerId != playerName)
             {
-                LogDebug($"[Client] Player {playerId} connected at position {position}");
-                GameObject playerObject = Instantiate(otherPlayerPrefab, position, Quaternion.identity);
+                var playerObject = Instantiate(otherPlayerPrefab, position, Quaternion.identity);
+                playerObject.playerName = playerId;
+                playerObject.Init();
                 _otherPlayers[playerId] = playerObject;
             }
         }
@@ -191,9 +227,8 @@ namespace MultiCraft.Scripts.Engine.Network
             string playerId = data.GetProperty("player_id").GetString();
             Vector3 position = JsonToVector3(data.GetProperty("position"));
 
-            if (_otherPlayers.TryGetValue(playerId, out var player))
+            if (playerId != null && _otherPlayers.TryGetValue(playerId, out var player))
             {
-                //LogDebug($"[Client] Player {playerId} moved to position {position}");
                 player.transform.position = position;
             }
         }
@@ -202,11 +237,29 @@ namespace MultiCraft.Scripts.Engine.Network
         {
             string playerId = data.GetProperty("player_id").GetString();
 
-            if (_otherPlayers.ContainsKey(playerId))
+            UiManager.Instance.ChatWindow.commandReader.PrintLog($"{playerId}: Вышел с сервера сервер");
+            if (playerId != null && _otherPlayers.ContainsKey(playerId))
             {
-                LogDebug($"[Client] Player {playerId} disconnected.");
                 Destroy(_otherPlayers[playerId]);
                 _otherPlayers.Remove(playerId);
+            }
+        }
+
+        private void HandlePlayerUpdate(JsonElement data)
+        {
+            string playerId = data.GetProperty("player_id").GetString();
+            Vector3 position = JsonToVector3(data.GetProperty("position"));
+
+            if (playerId != null && _otherPlayers.TryGetValue(playerId, out OtherNetPlayer player))
+            {
+                player.transform.position = position;
+            }
+            else
+            {
+                var playerObject = Instantiate(otherPlayerPrefab, position, Quaternion.identity);
+                playerObject.playerName = playerId;
+                playerObject.Init();
+                if (playerId != null) _otherPlayers[playerId] = playerObject;
             }
         }
 
@@ -219,65 +272,113 @@ namespace MultiCraft.Scripts.Engine.Network
                 string playerId = player.GetProperty("player_id").GetString();
                 Vector3 position = JsonToVector3(player.GetProperty("position"));
 
-                if (!_otherPlayers.ContainsKey(playerId) && playerId != _playerName)
+                if (playerId != null && !_otherPlayers.ContainsKey(playerId) && playerId != playerName)
                 {
-                    LogDebug($"[Client] Player {playerId} is at position {position}");
-                    GameObject playerObject = Instantiate(otherPlayerPrefab, position, Quaternion.identity);
+                    var playerObject = Instantiate(otherPlayerPrefab, position, Quaternion.identity);
+                    playerObject.playerName = playerId;
+                    playerObject.Init();
                     _otherPlayers[playerId] = playerObject;
                 }
             }
         }
 
+        private void HandleBlockUpdate(JsonElement data)
+        {
+            Vector3Int position = JsonToVector3Int(data.GetProperty("position"));
+            int newBlockType = data.GetProperty("block_type").GetInt32();
+
+            NetworkWorld.instance.UpdateBlock(position, newBlockType);
+        }
+        
+        private void HandleDamage(JsonElement data)
+        {
+            var attackTarget = data.GetProperty("attack_target").ToString();
+            var damage = int.Parse(data.GetProperty("damage").ToString());
+            
+            _otherPlayers[attackTarget].health.TakeDamage(damage);
+        }
+
+        private IEnumerator SendPlayerPositionRepeatedly()
+        {
+            while (true)
+            {
+                ServerMassageMove(_player);
+                yield return null;
+            }
+            // ReSharper disable once IteratorNeverReturns
+        }
+
+        #endregion
+
+        #region Chat
+
+        private void HandleChat(JsonElement data)
+        {
+            string playerId = data.GetProperty("player_id").GetString();
+            string massage = data.GetProperty("chat_massage").GetString();
+
+            if (playerId != null && playerId != playerName)
+            {
+                UiManager.Instance.ChatWindow.commandReader.PrintLog($"{playerId}: {massage}");
+            }
+        }
+
+        #endregion
+        
+        #region HandleChunks
+
         private void HandleChunkData(JsonElement data)
         {
             Vector3Int chunkCoord = JsonToVector3Int(data.GetProperty("position"));
 
-            LogDebug($"[Client] Chunk data received for coordinates {chunkCoord}");
-
-            const int chunkWidth = 16;
-            const int chunkHeight = 256;
-            const int chunkDepth = 16;
-
             JsonElement blocksJson = data.GetProperty("blocks");
-            int[] flatBlocks = new int[chunkWidth * chunkHeight * chunkDepth];
-            int[,,] blocks = new int[chunkWidth, chunkHeight, chunkDepth];
+            JsonElement waterBlocksJson = data.GetProperty("waterChunk");
+            JsonElement floraBlocksJson = data.GetProperty("floraChunk");
 
-            int index = 0;
-            foreach (JsonElement blockValue in blocksJson.EnumerateArray())
+            if (NetworkWorld.instance.SpawnChunk(chunkCoord, Blocks(blocksJson)) &&
+                NetworkWorld.instance.SpawnWaterChunk(chunkCoord, Blocks(waterBlocksJson)) &&
+                NetworkWorld.instance.SpawnFloraChunk(chunkCoord, Blocks(floraBlocksJson)))
+                _chunksToLoad--;
+
+            _chunks.Enqueue(chunkCoord);
+
+            if (_chunksToLoad <= 0)
+                _spawnChunks = true;
+        }
+
+        private int[,,] Blocks(JsonElement blocksJson)
+        {
+            var flatBlocks = new int[16 * 16 * 256];
+            var blocks = new int[16, 256, 16];
+
+            var index = 0;
+            foreach (var blockValue in blocksJson.EnumerateArray())
             {
                 flatBlocks[index] = blockValue.GetInt32();
                 index++;
             }
 
-            for (int x = 0; x < chunkWidth; x++)
+            for (int x = 0; x < 16; x++)
             {
-                for (int y = 0; y < chunkHeight; y++)
+                for (int y = 0; y < 256; y++)
                 {
-                    for (int z = 0; z < chunkDepth; z++)
+                    for (int z = 0; z < 16; z++)
                     {
-                        int flatIndex = x + z * chunkWidth + y * chunkWidth * chunkDepth;
+                        int flatIndex = x + z * 16 + y * 16 * 16;
                         blocks[x, y, z] = flatBlocks[flatIndex];
                     }
                 }
             }
 
-            if (NetworkWorld.instance.SpawnChunk(chunkCoord, blocks))
-                _chunksToLoad--;
-
-            if (_chunksToLoad <= 0)
-            {
-                NetworkWorld.instance.RenderChunks();
-                OnAllChunksLoaded();
-            }
+            return blocks;
         }
-
 
         private void RequestChunksInView(Vector3 position)
         {
             Vector3Int playerChunkPosition = new Vector3Int(
-                Mathf.FloorToInt(position.x / NetworkWorld.ChunkWidth),
+                Mathf.FloorToInt(position.x / 16),
                 0,
-                Mathf.FloorToInt(position.z / NetworkWorld.ChunkWidth)
+                Mathf.FloorToInt(position.z / 16)
             );
 
             int loadDistance = NetworkWorld.instance.settings.loadDistance;
@@ -288,64 +389,85 @@ namespace MultiCraft.Scripts.Engine.Network
             {
                 for (int z = -loadDistance; z <= loadDistance; z++)
                 {
-                    Vector3Int chunkPosition = new Vector3Int(
+                    RequestChunk(new Vector3Int(
                         playerChunkPosition.x + x,
                         0,
                         playerChunkPosition.z + z
-                    );
-
-                    _chunksToLoad++;
-
-                    SendMessageToServer(new
-                    {
-                        type = "get_chunk",
-                        position = new { x = chunkPosition.x, y = chunkPosition.y, z = chunkPosition.z }
-                    });
+                    ));
                 }
             }
         }
 
-
-        private void HandlePlayerUpdate(JsonElement data)
+        public void RequestChunk(Vector3Int chunkPosition)
         {
-            string playerId = data.GetProperty("player_id").GetString();
-            Vector3 position = JsonToVector3(data.GetProperty("position"));
+            _chunksToLoad++;
 
-            LogDebug($"[Client] Update for player {playerId}: position {position}");
-
-            if (_otherPlayers.TryGetValue(playerId, out GameObject player))
+            SendMessageToServer(new
             {
-                player.transform.position = position;
-            }
-            else
-            {
-                GameObject newPlayer = Instantiate(otherPlayerPrefab, position, Quaternion.identity);
-                _otherPlayers[playerId] = newPlayer;
-            }
+                type = "get_chunk",
+                position = new { chunkPosition.x, chunkPosition.y, chunkPosition.z }
+            });
         }
 
         private void OnAllChunksLoaded()
         {
-            Debug.Log("[Client] All chunks have been loaded. Spawning player.");
+            if (_player) return;
+
             _player = Instantiate(playerPrefab, _playerPosition, Quaternion.identity);
 
-            // Инициализируйте интерфейсы, контроллер игрока и другие компоненты
+            NetworkWorld.instance.player = _player;
+
             UiManager.Instance.PlayerController = _player.GetComponent<PlayerController>();
             UiManager.Instance.Initialize();
             UiManager.Instance.CloseLoadingScreen();
 
-            moveCoroutine = StartCoroutine(SendPlayerPositionRepeatedly());
+
+            NetworkWorld.instance.RenderAllChunks -= OnAllChunksLoaded;
+
+            foreach (var otherPlayers in _otherPlayers.Values)
+            {
+                otherPlayers.cameraTransform = _player.GetComponentInChildren<Camera>().transform;
+            }
+
+            StartCoroutine(SendPlayerPositionRepeatedly());
         }
 
-        private void HandleBlockUpdate(JsonElement data)
+        #endregion
+
+        #region Inventory
+
+        private void HandleInventoryGet(JsonElement data)
         {
-            Vector3Int position = JsonToVector3Int(data.GetProperty("position"));
-            int newBlockType = data.GetProperty("block_type").GetInt32();
-            LogDebug($"[Client] Block updated at {position} to type {newBlockType}");
+            var slots = JsonToInventory(data.GetProperty("inventory"));
 
-            NetworkWorld.instance.UpdateBlock(position, newBlockType);
+            UiManager.Instance.OpenCloseChest(slots,
+                Vector3Int.FloorToInt(JsonToVector3(data.GetProperty("position"))));
         }
 
+        public void GetInventory(Vector3 chestPosition)
+        {
+            SendMessageToServer(new
+            {
+                type = "get_inventory",
+                position = new { chestPosition.x, chestPosition.y, chestPosition.z }
+            });
+        }
+
+        public void SetInventory(Vector3Int chestPosition, List<ItemInSlot> slots)
+        {
+            var slotsJson = JsonToInventory(slots);
+
+            SendMessageToServer(new
+            {
+                type = "set_inventory",
+                position = new { chestPosition.x, chestPosition.y, chestPosition.z },
+                inventory = slotsJson
+            });
+        }
+
+        #endregion
+
+        #region Utils
 
         private Vector3Int JsonToVector3Int(JsonElement json)
         {
@@ -354,6 +476,57 @@ namespace MultiCraft.Scripts.Engine.Network
                 json.GetProperty("y").GetInt32(),
                 json.GetProperty("z").GetInt32()
             );
+        }
+
+        private string JsonToInventory(List<ItemInSlot> slots)
+        {
+            List<ItemJson> slotsJson = new List<ItemJson>();
+
+            foreach (var slot in slots)
+            {
+                var item = new ItemJson();
+                if (slot == null)
+                {
+                    item.type = "null";
+                    item.count = 0;
+                    item.durability = 0;
+                }
+                else
+                {
+                    item = new ItemJson()
+                    {
+                        type = slot.Item.Name,
+                        count = slot.Amount,
+                        durability = slot.Durability,
+                    };
+                }
+
+                slotsJson.Add(item);
+            }
+
+            return JsonSerializer.Serialize(slotsJson);
+        }
+
+
+        private List<ItemInSlot> JsonToInventory(JsonElement json)
+        {
+            List<ItemInSlot> inventory = new List<ItemInSlot>();
+
+            List<ItemJson> items = json.Deserialize<List<ItemJson>>();
+
+            foreach (var itemJson in items)
+            {
+                var item = new ItemInSlot
+                {
+                    Amount = itemJson.count,
+                    Durability = itemJson.durability,
+                    Item = itemJson.type != "null" ? ResourceLoader.Instance.GetItem(itemJson.type) : null
+                };
+
+                inventory.Add(item);
+            }
+
+            return inventory;
         }
 
         private Vector3 JsonToVector3(JsonElement json)
@@ -371,11 +544,23 @@ namespace MultiCraft.Scripts.Engine.Network
                 return JsonToVector3(positionElement);
             }
 
-            // Если свойства нет, возвращаем вектор (0, 0, 0)
             Debug.LogWarning($"[Client] Property '{propertyName}' not found. Defaulting position to (0, 0, 0).");
             return Vector3.zero;
         }
 
+        #endregion
+
+        #region SendToServer
+
+        public void SendMessageToServerChat(string massage)
+        {
+            SendMessageToServer(new
+            {
+                type = "chat",
+                player = playerName,
+                chat_massage = massage
+            });
+        }
         public void SendBlockPlaced(Vector3 position, int blockType)
         {
             SendMessageToServer(new
@@ -383,14 +568,25 @@ namespace MultiCraft.Scripts.Engine.Network
                 type = "place_block",
                 position = new
                 {
-                    x = position.x,
-                    y = position.y,
-                    z = position.z
+                    position.x,
+                    position.y,
+                    position.z
                 },
                 block_type = blockType
             });
         }
 
+        public void ServerMassageAttack(int damage, string attackTarget)
+        {
+            SendMessageToServer(new
+            {
+                type = "Attack",
+                player = playerName,
+                attack_target = attackTarget,
+                damage,
+            });
+        }
+        
         public void SendBlockDestroyed(Vector3 position)
         {
             SendMessageToServer(new
@@ -398,9 +594,9 @@ namespace MultiCraft.Scripts.Engine.Network
                 type = "destroy_block",
                 position = new
                 {
-                    x = position.x,
-                    y = position.y,
-                    z = position.z
+                    position.x,
+                    position.y,
+                    position.z
                 },
             });
         }
@@ -408,48 +604,28 @@ namespace MultiCraft.Scripts.Engine.Network
         private void SendMessageToServer(object message)
         {
             string jsonMessage = JsonSerializer.Serialize(message);
-            Debug.Log(jsonMessage);
-            Debug.Log(Encoding.UTF8.GetBytes(jsonMessage).ToString());
+            //LogDebug($"[MassageToServer] {jsonMessage}");
             _webSocket.SendAsync(Encoding.UTF8.GetBytes(jsonMessage));
         }
 
-        private void OnApplicationQuit()
-        {
-            if (_webSocket != null)
-            {
-                _webSocket.CloseAsync();
-            }
-        }
-
-        private IEnumerator SendPlayerPositionRepeatedly()
-        {
-            while (true)
-            {
-                ServerMassageMove(_player);
-                yield return null;
-            }
-        }
-
-        public void ServerMassageMove(GameObject player)
+        private void ServerMassageMove(GameObject player)
         {
             SendMessageToServer(new
             {
                 type = "move",
-                player = _playerName,
+                player = playerName,
                 position = new
                 {
-                    x = player.transform.position.x,
-                    y = player.transform.position.y,
-                    z = player.transform.position.z
+                    player.transform.position.x,
+                    player.transform.position.y,
+                    player.transform.position.z
                 }
             });
         }
 
-        private void HandleEvent(JsonElement data)
-        {
-            string eventType = data.GetProperty("event_type").GetString();
-            LogDebug($"[Client] Event received: {eventType}");
-        }
+        #endregion
+
+        #region Logs
 
         private void LogDebug(string message)
         {
@@ -474,5 +650,14 @@ namespace MultiCraft.Scripts.Engine.Network
                 Debug.LogError(message);
             }
         }
+
+        #endregion
+    }
+
+    public class ItemJson
+    {
+        public string type { get; set; }
+        public int count { get; set; }
+        public int durability { get; set; }
     }
 }

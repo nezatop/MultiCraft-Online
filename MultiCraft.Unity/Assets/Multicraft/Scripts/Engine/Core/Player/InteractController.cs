@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MultiCraft.Scripts.Engine.UI;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -30,7 +31,16 @@ namespace MultiCraft.Scripts.Engine.Core.Player
         private void OnDisable()
         {
             _inputSystem.Player.OpenChat.performed -= OpenChat;
+            _inputSystem.Player.OpenInventory.performed -= OpenInventory;  
+        }
+
+        private void OnDestroy()
+        {
+            _inputSystem.Player.OpenChat.performed -= OpenChat;
             _inputSystem.Player.OpenInventory.performed -= OpenInventory;
+            
+            _inputSystem.Player.Disable();
+            _inputSystem.UI.Disable();
         }
 
         public void EnableScripts()

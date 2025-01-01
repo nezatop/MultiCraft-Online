@@ -24,6 +24,9 @@ namespace MultiCraft.Scripts.Engine.UI
         public HealthView HealthView;
         public HungerUI hungerUI;
         
+        public GameObject GameOverScreen;
+        public GameObject PauseScreen;
+        
         public bool inventoryUpdated = false;
         
         public PlayerController PlayerController;
@@ -36,6 +39,7 @@ namespace MultiCraft.Scripts.Engine.UI
         
         private void Awake()
         {
+            LoadingScreen.SetActive(true);
             Instance = this;
         }
 
@@ -44,8 +48,6 @@ namespace MultiCraft.Scripts.Engine.UI
             InventoryWindow.CraftController.Init();
             InventoryWindow.InventoryController.Init();
             InventoryWindow.ChestController.Init();
-
-            LoadingScreen.SetActive(true);
 
             OpenInventory();
             CloseInventory();
@@ -56,7 +58,9 @@ namespace MultiCraft.Scripts.Engine.UI
             
             cordUI.gameObject.SetActive(true);
         }
-        
+
+
+        #region Inventorty
         public void OpenCloseInventory()
         {
             if (InventoryWindow.gameObject.activeSelf)
@@ -71,6 +75,23 @@ namespace MultiCraft.Scripts.Engine.UI
             }
         }
         
+        private void OpenInventory()
+        {
+            InventoryWindow.Open();
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = true;
+        }
+
+        private void CloseInventory()
+        {
+            InventoryWindow.Close();
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+
+        #endregion
+       
+        #region Chat
         public void OpenCloseChat()
         {
             if (ChatWindow.gameObject.activeSelf)
@@ -99,22 +120,9 @@ namespace MultiCraft.Scripts.Engine.UI
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.visible = false;
         }
-
+        #endregion
         
-        private void OpenInventory()
-        {
-            InventoryWindow.Open();
-            Cursor.lockState = CursorLockMode.Confined;
-            Cursor.visible = true;
-        }
-
-        private void CloseInventory()
-        {
-            InventoryWindow.Close();
-            Cursor.lockState = CursorLockMode.Locked;
-            Cursor.visible = false;
-        }
-
+        #region Chest
         public void OpenCloseChest(List<ItemInSlot> slots, Vector3Int position)
         {
             InventoryWindow.gameObject.SetActive(true);
@@ -140,7 +148,37 @@ namespace MultiCraft.Scripts.Engine.UI
         {
             InventoryWindow.InventoryController.UpdateUI(slots);
         }
+        #endregion
 
+        #region Pause
+
+        public void OpenClosePause()
+        {
+            CloseInventory();
+            CloseChest();
+            CloseChat();
+            if (PauseScreen.activeSelf)
+            {
+                ClosePause();
+            }
+            else
+            {
+                OpenPause();
+            }
+        }
+
+        private void OpenPause()
+        {
+            PauseScreen.SetActive(true);
+        }
+
+        private void ClosePause()
+        {
+            PauseScreen.SetActive(false);
+        }
+
+        #endregion
+        
         public void CloseLoadingScreen()
         {
             LoadingScreen.SetActive(false);

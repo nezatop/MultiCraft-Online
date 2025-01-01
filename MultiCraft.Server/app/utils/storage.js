@@ -17,10 +17,7 @@ export function loadPlayerData() {
                 player.inventory
             ));
         });
-        console.log('Данные игроков успешно загружены.');
-    } else {
-        console.log('Файл данных игроков не найден. Будет создан новый.');
-    }
+    } else {}
 }
 
 export function savePlayerData() {
@@ -32,5 +29,4 @@ export function savePlayerData() {
         inventory: data.inventory
     }));
     fs.writeFileSync(JSON_FILE_PATH, JSON.stringify(playersArray, null, 2));
-    console.log('Данные игроков успешно сохранены.');
 }

@@ -177,7 +177,7 @@ MonoBehaviour:
   breakSpeed: 1
   miningMultiplier: 1
   placeDelay: 0.5
-  _isSurvival: 0
+  _isSurvival: 1
   destroyDelayNonSurvival: 0.3
 --- !u!1 &4142220472990241464
 GameObject:
@@ -308,12 +308,12 @@ GameObject:
   m_Component:
   - component: {fileID: 4575951720645121198}
   - component: {fileID: 8227682749428394042}
-  - component: {fileID: 7143261653449803982}
-  - component: {fileID: 679217297562153383}
-  - component: {fileID: 5481117361350124575}
   - component: {fileID: 7189886716720410347}
   - component: {fileID: 5118491862625611032}
   - component: {fileID: 3945561552639971158}
+  - component: {fileID: 7143261653449803982}
+  - component: {fileID: 679217297562153383}
+  - component: {fileID: 5481117361350124575}
   - component: {fileID: 7154332104224507000}
   - component: {fileID: 44793484079803861}
   - component: {fileID: 9174032650241569447}
@@ -365,61 +365,6 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &7143261653449803982
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7258850639289370271}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a7ac7d77f2a044f9843e3c36a56fc361, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveSpeed: 5
-  jumpHeight: 1.24
-  gravity: -18
-  fallThreshold: 3
-  fallDamageMultiplier: 5
-  footstepAudioSource: {fileID: 3945561552639971158}
-  jumpAudioSource: {fileID: 3945561552639971158}
-  footstepSounds:
-  - {fileID: 8300000, guid: 4a5ca6fd45ba8c24d8ad051727a6100d, type: 3}
-  - {fileID: 8300000, guid: c46a8ffa8f12e3f4e826db0e74ebb015, type: 3}
-  - {fileID: 8300000, guid: db5d765289580744790ba2a1eda19317, type: 3}
-  jumpSound: {fileID: 8300000, guid: de4a562844dfb0c4eb62107bd6826460, type: 3}
-  stepInterval: 0.5
-  handRenderer: {fileID: 8459740801024517315}
-  DroppedItemPrefab: {fileID: 7938290796487471727, guid: fca637bc470e974498b1b97fbaeda5bd, type: 3}
-  DropForce: 5
---- !u!114 &679217297562153383
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7258850639289370271}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5cb593b0c664beb8663cd303ae4a148, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HotBarSelectedSlot: 0
---- !u!114 &5481117361350124575
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7258850639289370271}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 889e9bdb03a746ad97aef95faee89e91, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  health: 10
-  maxHealth: 10
 --- !u!33 &7189886716720410347
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -570,6 +515,61 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &7143261653449803982
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7258850639289370271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a7ac7d77f2a044f9843e3c36a56fc361, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveSpeed: 5
+  jumpHeight: 1.24
+  gravity: -18
+  fallThreshold: 3
+  fallDamageMultiplier: 5
+  footstepAudioSource: {fileID: 3945561552639971158}
+  jumpAudioSource: {fileID: 3945561552639971158}
+  footstepSounds:
+  - {fileID: 8300000, guid: 4a5ca6fd45ba8c24d8ad051727a6100d, type: 3}
+  - {fileID: 8300000, guid: c46a8ffa8f12e3f4e826db0e74ebb015, type: 3}
+  - {fileID: 8300000, guid: db5d765289580744790ba2a1eda19317, type: 3}
+  jumpSound: {fileID: 8300000, guid: de4a562844dfb0c4eb62107bd6826460, type: 3}
+  stepInterval: 0.5
+  handRenderer: {fileID: 8459740801024517315}
+  DroppedItemPrefab: {fileID: 7938290796487471727, guid: fca637bc470e974498b1b97fbaeda5bd, type: 3}
+  DropForce: 5
+--- !u!114 &679217297562153383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7258850639289370271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5cb593b0c664beb8663cd303ae4a148, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HotBarSelectedSlot: 0
+--- !u!114 &5481117361350124575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7258850639289370271}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 889e9bdb03a746ad97aef95faee89e91, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 10
+  maxHealth: 10
 --- !u!114 &7154332104224507000
 MonoBehaviour:
   m_ObjectHideFlags: 0

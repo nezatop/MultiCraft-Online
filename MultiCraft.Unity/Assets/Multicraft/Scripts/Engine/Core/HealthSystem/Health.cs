@@ -12,25 +12,27 @@ namespace MultiCraft.Scripts.Engine.Core.HealthSystem
 
         public event Action OnDeath;
         public event Action<int> OnDamage;
+        
+        public bool haveHunger = true;
 
         private void Awake()
         {
-            gameObject.GetComponent<HungerSystem>().onHungerZero += TakeDamage;
+            if(haveHunger)gameObject.GetComponent<HungerSystem>().onHungerZero += TakeDamage;
         }
 
         private void OnDisable()
         {
-            gameObject.GetComponent<HungerSystem>().onHungerZero -= TakeDamage;
+            if(haveHunger)gameObject.GetComponent<HungerSystem>().onHungerZero -= TakeDamage;
         }
 
         public void TakeDamage(int damage)
         {
-            health = Mathf.Clamp(health - damage, 1, maxHealth);
+            health = Mathf.Clamp(health - damage, 0, maxHealth);
             if (health <= 0) OnDeath?.Invoke();
             OnDamage?.Invoke((int)health);
         }
 
-        public void TakeDamage()
+        private void TakeDamage()
         {
             var damage = 0.001f * Time.deltaTime;
             health = Mathf.Clamp((health - damage), 1f, maxHealth);

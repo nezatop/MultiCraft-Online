@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MultiCraft.Scripts.Engine.Core.Worlds;
+using MultiCraft.Scripts.Engine.Network.Worlds;
 using UnityEngine;
 
 namespace MultiCraft.Scripts.Engine.Core.Inventories
@@ -37,7 +38,10 @@ namespace MultiCraft.Scripts.Engine.Core.Inventories
                         chestSlots.Add(null);
                 }
             }
-            World.Instance.UpdateChest(_chestPosition, chestSlots);
+            if(World.Instance != null)
+                World.Instance.UpdateChest(_chestPosition, chestSlots);
+            else
+                NetworkWorld.instance.UpdateChest(_chestPosition, chestSlots);
             _chestPosition = new Vector3Int(0, 0, 0);
         }
 
