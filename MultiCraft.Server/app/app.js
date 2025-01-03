@@ -19,9 +19,8 @@ app.use(cors());
 // Создаем сервер WebSocket
 const wss = new WebSocketServer({ server }); // Используем WebSocketServer вместо WebSocket.Server
 
-loadPlayerData();
+//loadPlayerData();
 
-// Обработка подключения клиентов
 wss.on('connection', (socket) => {
 
     socket.on('message', (message) => {

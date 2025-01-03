@@ -1,0 +1,590 @@
+[
+  {
+    "login": "1234561",
+    "password": "1234561",
+    "position": {
+      "x": 6.86339951,
+      "y": 64.8699951,
+      "z": 11.771718
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "inventory": [
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      }
+    ]
+  },
+  {
+    "login": "cce1a3b0-92dd-43e1-9522-e17caf98ac5d",
+    "password": "2e10aaac-f7ce-4f27-b26a-74483739cf43",
+    "position": {
+      "x": 6.72964907,
+      "y": 64.8699951,
+      "z": 14.6821804
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "inventory": [
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      }
+    ]
+  },
+  {
+    "login": "03297872-cea8-43dc-b66e-7df8e3a5f05e",
+    "password": "3680b794-85d8-488a-8b04-286a7186dbf0",
+    "position": {
+      "x": 2,
+      "y": 67.8699951,
+      "z": 11
+    },
+    "rotation": {
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "inventory": [
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      },
+      {
+        "type": "null",
+        "count": 0,
+        "durability": 0
+      }
+    ]
+  }
+]

@@ -1,0 +1,305 @@
+fileFormatVersion: 2
+guid: 1beda0946d74ea747890ab9fe6603d22
+ModelImporter:
+  serializedVersion: 22200
+  internalIDToNameTable:
+  - first:
+      1: 100000
+    second: Armature
+  - first:
+      1: 100002
+    second: Body.001
+  - first:
+      1: 100004
+    second: Chest
+  - first:
+      1: 100006
+    second: Chest.001
+  - first:
+      1: 100008
+    second: Chest.001_end
+  - first:
+      1: 100010
+    second: //RootNode
+  - first:
+      1: 100012
+    second: LeftArm
+  - first:
+      1: 100014
+    second: LeftArm_end
+  - first:
+      1: 100016
+    second: LeftLeg
+  - first:
+      1: 100018
+    second: LeftLeg_end
+  - first:
+      1: 100020
+    second: RightArm
+  - first:
+      1: 100022
+    second: RightArm_end
+  - first:
+      1: 100024
+    second: RightLeg
+  - first:
+      1: 100026
+    second: RightLeg_end
+  - first:
+      1: 100028
+    second: Body
+  - first:
+      1: 100030
+    second: Head
+  - first:
+      1: 100032
+    second: Head_end
+  - first:
+      4: 400000
+    second: Armature
+  - first:
+      4: 400002
+    second: Body.001
+  - first:
+      4: 400004
+    second: Chest
+  - first:
+      4: 400006
+    second: Chest.001
+  - first:
+      4: 400008
+    second: Chest.001_end
+  - first:
+      4: 400010
+    second: //RootNode
+  - first:
+      4: 400012
+    second: LeftArm
+  - first:
+      4: 400014
+    second: LeftArm_end
+  - first:
+      4: 400016
+    second: LeftLeg
+  - first:
+      4: 400018
+    second: LeftLeg_end
+  - first:
+      4: 400020
+    second: RightArm
+  - first:
+      4: 400022
+    second: RightArm_end
+  - first:
+      4: 400024
+    second: RightLeg
+  - first:
+      4: 400026
+    second: RightLeg_end
+  - first:
+      4: 400028
+    second: Body
+  - first:
+      4: 400030
+    second: Head
+  - first:
+      4: 400032
+    second: Head_end
+  - first:
+      21: 2100000
+    second: Texture
+  - first:
+      43: 4300000
+    second: Body.001
+  - first:
+      43: 4300002
+    second: Body
+  - first:
+      95: 9500000
+    second: //RootNode
+  - first:
+      137: 13700000
+    second: Body.001
+  - first:
+      137: 13700002
+    second: Body
+  - first:
+      41386430: 2186277476908879412
+    second: ImportLogs
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Texture
+    second: {fileID: 2100000, guid: 8ff442fa69f1bc0429a7de43964d492c, type: 2}
+  materials:
+    materialImportMode: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    removeConstantScaleCurves: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importPhysicalCameras: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    nodeNameCollisionStrategy: 0
+    fileIdsGeneration: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    bakeAxisConversion: 0
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    optimizeBones: 1
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVMarginMethod: 0
+    secondaryUVMinLightmapResolution: 40
+    secondaryUVMinObjectScale: 1
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    strictVertexDataChecks: 0
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 1
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton:
+    - name: Faithful steve(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Armature
+      parentName: Faithful steve(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 100, y: 100, z: 100}
+    - name: Chest
+      parentName: Armature
+      position: {x: -0, y: 0.00028656042, z: 0.007562565}
+      rotation: {x: 0.7011548, y: -1.4224752e-24, z: 1.600987e-16, w: 0.71300906}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Head
+      parentName: Chest
+      position: {x: -2.729696e-25, y: 0.0073848926, z: 1.8626451e-11}
+      rotation: {x: 0.0083822645, y: -1.1320687e-16, z: -1.1320685e-16, w: 0.9999649}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Head_end
+      parentName: Head
+      position: {x: -0, y: 0.0050305235, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: LeftArm
+      parentName: Chest
+      position: {x: -0.0025405537, y: 0.006303756, z: -0.00001812663}
+      rotation: {x: 0.7070817, y: -0.0058619007, z: 0.7070822, w: -0.0059918994}
+      scale: {x: 1.0000001, y: 1, z: 0.99991524}
+    - name: LeftArm_end
+      parentName: LeftArm
+      position: {x: -0, y: 0.0063007185, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: RightArm
+      parentName: Chest
+      position: {x: 0.0025405537, y: 0.006303756, z: -0.00001812663}
+      rotation: {x: -0.7070817, y: -0.0058619007, z: 0.7070822, w: 0.0059918994}
+      scale: {x: 1.0000001, y: 1, z: 0.99991524}
+    - name: RightArm_end
+      parentName: RightArm
+      position: {x: -0, y: 0.0063007185, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: LeftLeg
+      parentName: Chest
+      position: {x: -0.0012796416, y: -2.7415809e-10, z: -9.3132255e-12}
+      rotation: {x: 0.9999649, y: -9.568585e-19, z: 1.1414844e-16, w: -0.00838361}
+      scale: {x: 1, y: 1, z: 0.9996717}
+    - name: LeftLeg_end
+      parentName: LeftLeg
+      position: {x: -0, y: 0.0076897424, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: RightLeg
+      parentName: Chest
+      position: {x: 0.0012796416, y: -2.7415809e-10, z: -9.3132255e-12}
+      rotation: {x: 0.9999649, y: -9.568585e-19, z: 1.1414844e-16, w: -0.00838361}
+      scale: {x: 1, y: 1, z: 0.9996717}
+    - name: RightLeg_end
+      parentName: RightLeg
+      position: {x: -0, y: 0.0076897424, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Body
+      parentName: Faithful steve(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+      scale: {x: 100, y: 100, z: 100}
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: Chest
+    hasTranslationDoF: 0
+    hasExtraRoot: 1
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 1
+  addHumanoidExtraRootOnlyWhenUsingAvatar: 0
+  importBlendShapeDeformPercent: 0
+  remapMaterialsIfMaterialImportModeIsNone: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

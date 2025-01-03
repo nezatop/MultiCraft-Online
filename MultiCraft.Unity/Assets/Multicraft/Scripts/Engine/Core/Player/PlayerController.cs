@@ -16,33 +16,34 @@ namespace MultiCraft.Scripts.Engine.Core.Player
         public float jumpHeight = 1.24f;
         public float gravity = -18f;
 
-        public float fallThreshold = 3.0f; // Высота, с которой начинается урон
-        public float fallDamageMultiplier = 0.5f; // Множитель урона за каждую единицу высоты выше порога
+        public float fallThreshold = 3.0f;
+        public float fallDamageMultiplier = 0.5f;
 
-        public AudioSource footstepAudioSource; // Источник звука шагов
-        public AudioSource jumpAudioSource; // Источник звука прыжка
-        public AudioClip[] footstepSounds; // Массив звуков шагов
-        public AudioClip jumpSound; // Звук прыжка
-        public float stepInterval = 0.5f; // Интервал между шагами (в секундах)
+        public AudioSource footstepAudioSource;
+        public AudioSource jumpAudioSource;
+        public AudioClip[] footstepSounds;
+        public AudioClip jumpSound;
+        public float stepInterval = 0.5f;
 
         private CharacterController _controller;
         private Vector3 _velocity;
         private bool _isGrounded;
 
         public HandRenderer handRenderer;
-
         public DroppedItem DroppedItemPrefab;
         [SerializeField] private float DropForce = 5f;
 
         private Inventory _inventory;
-        private float _fallStartY; // Высота начала падения
-        private bool _isFalling; // Флаг для отслеживания состояния падения
-        private Health _health; // Ссылка на компонент здоровья
+        private float _fallStartY;
+        private bool _isFalling;
+        private Health _health;
 
-        private float _stepTimer; // Таймер для шагов
+        private float _stepTimer;
 
+        public Animator animator;
 
         private int _currentValue = 0;
+        private bool _crouching;
         private const int MinValue = 0;
         private const int MaxValue = 8;
 
@@ -60,31 +61,69 @@ namespace MultiCraft.Scripts.Engine.Core.Player
             Cursor.visible = false;
         }
 
+        private void Update()
+        {
+            HandleMovement();
+            HandleItemInteraction();
+            HandleAnimation();
+        }
+
+        private void HandleMovement()
+        {
+            _isGrounded = _controller.isGrounded;
+            animator.SetBool("Grounded", _isGrounded);
+
+            if (_isGrounded && _velocity.y < 0)
+                _velocity.y = -2f;
+
+            float horizontalInput = Input.GetAxis("Horizontal");
+            float verticalInput = Input.GetAxis("Vertical");
+            Vector3 moveDirection = transform.forward * verticalInput + transform.right * horizontalInput;
+            _controller.Move(moveDirection * (moveSpeed * Time.deltaTime));
+
+            if (_isGrounded && moveDirection.magnitude > 0)
+            {
+                _stepTimer += Time.deltaTime;
+                if (_stepTimer >= stepInterval)
+                {
+                    PlayFootstepSound();
+                    _stepTimer = 0f;
+                }
+            }
+            else
+            {
+                _stepTimer = 0f;
+            }
+
+            if (Input.GetButtonDown("Jump") && _isGrounded)
+            {
+                _velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+                PlayJumpSound();
+            }
+
+            _velocity.y += gravity * Time.deltaTime;
+            _controller.Move(_velocity * Time.deltaTime);
+        }
+
+
         public void Teleport(Vector3 position)
         {
-            // Отключаем текущую скорость, чтобы избежать странного поведения после телепортации
-            _velocity = Vector3.zero;
-
-            // Перемещаем игрока с использованием CharacterController.Move
+            _velocity = Vector3
+                .zero; // Отключаем текущую скорость, чтобы избежать странного поведения после телепортации
             _controller.enabled = false; // Отключаем CharacterController, чтобы избежать конфликтов
             transform.position = position;
             _controller.enabled = true; // Включаем обратно
         }
 
-        private void Update()
+
+        private void HandleItemInteraction()
         {
             float scroll = Input.GetAxis("Mouse ScrollWheel");
 
-            if (scroll < 0f)
-            {
-                if (_currentValue < MaxValue)
-                    _currentValue++;
-            }
-            else if (scroll > 0f)
-            {
-                if (_currentValue > MinValue)
-                    _currentValue--;
-            }
+            if (scroll < 0f && _currentValue < MaxValue)
+                _currentValue++;
+            else if (scroll > 0f && _currentValue > MinValue)
+                _currentValue--;
 
             var handItem = _inventory.UpdateHotBarSelectedSlot(_currentValue);
             if (handItem != null)
@@ -98,7 +137,7 @@ namespace MultiCraft.Scripts.Engine.Core.Player
                         handRenderer.SetMesh(blockMesh);
                     }
                     else
-                    { 
+                    {
                         var itemMesh = DropItemMeshBuilder.GeneratedMesh(handItem);
                         handRenderer.RemoveMesh();
                     }
@@ -121,63 +160,31 @@ namespace MultiCraft.Scripts.Engine.Core.Player
                 droppedItem.Item = new ItemInSlot(item, 1);
                 droppedItem.Init();
             }
+        }
 
+        private void HandleAnimation()
+        {
+            float horizontalInput = Input.GetAxis("Horizontal");
+            float verticalInput = Input.GetAxis("Vertical");
+            bool isMoving = horizontalInput != 0 || verticalInput != 0;
+            animator.SetFloat("VelocityX", horizontalInput*4);
+            animator.SetFloat("VelocityZ", verticalInput*4);
 
-            _isGrounded = _controller.isGrounded;
-
-            // Обработка начала падения
-            if (!_isGrounded && !_isFalling)
+            if (Input.GetKey(KeyCode.LeftControl))
             {
-                _fallStartY = transform.position.y;
-                _isFalling = true;
-            }
-
-            // Обработка приземления
-            if (_isGrounded && _isFalling)
-            {
-                float fallDistance = _fallStartY - transform.position.y;
-                if (fallDistance > fallThreshold)
-                {
-                    ApplyFallDamage(fallDistance);
-                }
-
-                _isFalling = false;
-            }
-
-            // Гравитация и движение
-            if (_isGrounded && _velocity.y < 0)
-                _velocity.y = -2f;
-
-            var horizontalInput = Input.GetAxis("Horizontal");
-            var verticalInput = Input.GetAxis("Vertical");
-
-            var moveDirection = transform.forward * verticalInput + transform.right * horizontalInput;
-            _controller.Move(moveDirection * (moveSpeed * Time.deltaTime));
-
-            // Воспроизведение звуков шагов
-            if (_isGrounded && moveDirection.magnitude > 0)
-            {
-                _stepTimer += Time.deltaTime;
-                if (_stepTimer >= stepInterval)
-                {
-                    PlayFootstepSound();
-                    _stepTimer = 0f;
-                }
+                _crouching = true;
+                moveSpeed = 2.5f;
             }
             else
             {
-                _stepTimer = 0f; // Сброс таймера, если игрок не двигается
+                _crouching = false;
+                moveSpeed = 5.0f;
             }
 
-            // Прыжок
-            if (Input.GetButtonDown("Jump") && _isGrounded)
-            {
-                _velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-                PlayJumpSound(); // Воспроизведение звука прыжка
-            }
-
-            _velocity.y += gravity * Time.deltaTime;
-            _controller.Move(_velocity * Time.deltaTime);
+            var center = _controller.center;
+            center.y = _crouching ? 0.6f : 0.21f;
+            _controller.center = center;
+            animator.SetFloat("Upright", !_crouching ? 1.0f : 0.0f);
         }
 
         private void ApplyFallDamage(float fallDistance)

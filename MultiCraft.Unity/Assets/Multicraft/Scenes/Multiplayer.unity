@@ -3217,8 +3217,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enableLogging: 1
-  playerPrefab: {fileID: 7258850639289370271, guid: 580690148ab0888489b16ba9bc9ab1df, type: 3}
-  otherPlayerPrefab: {fileID: -3949426842645527243, guid: d283438db6db889439091a4cb97428ec, type: 3}
+  playerPrefab: {fileID: 3874808127795487834, guid: e5c5eeef3fc64e04c92c8955924d35a2, type: 3}
+  otherPlayerPrefab: {fileID: 7056010270576457223, guid: 74c49b3adc43ad64da94b0cfafe07e9a, type: 3}
   serverAddress: ws://localhost:8080
   playerName: 
 --- !u!4 &911118144
@@ -3826,7 +3826,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -185.51952}
+  m_AnchoredPosition: {x: 0, y: -185.52007}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1066753004
@@ -4990,8 +4990,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   settings:
-    viewDistanceInChunks: 3
-    loadDistance: 4
+    viewDistanceInChunks: 1
+    loadDistance: 2
   chunkPrefab: {fileID: 6950558421887607551, guid: a313ccba8d75ac74a84e6851abdc7ed5, type: 3}
   waterChunkPrefab: {fileID: 6133701986684697518, guid: 78d2594e4cc949e4a9b917c0ecc2955d, type: 3}
   floraChunkPrefab: {fileID: 2767855893500059531, guid: 0106e4a14b0bc554aa8349b9da243714, type: 3}

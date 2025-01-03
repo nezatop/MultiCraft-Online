@@ -19,6 +19,10 @@ namespace MultiCraft.Scripts.Engine.Network
 {
     public class NetworkManager : MonoBehaviour
     {
+        private static readonly int VelocityX = Animator.StringToHash("VelocityX");
+        private static readonly int VelocityY = Animator.StringToHash("VelocityY");
+        private static readonly int VelocityZ = Animator.StringToHash("VelocityZ");
+
         #region Parametrs
 
         public static NetworkManager instance { get; private set; }
@@ -45,7 +49,7 @@ namespace MultiCraft.Scripts.Engine.Network
         private bool _spawnChunks;
 
         #endregion
-        
+
         #region Initialization
 
         private void Start()
@@ -146,7 +150,7 @@ namespace MultiCraft.Scripts.Engine.Network
                     case "damage":
                         HandleDamage(message.RootElement);
                         break;
-                    
+
                     case "player_connected":
                         OnPlayerConnected(message.RootElement);
                         break;
@@ -182,7 +186,7 @@ namespace MultiCraft.Scripts.Engine.Network
                     case "chat":
                         HandleChat(message.RootElement);
                         break;
-                    
+
                     default:
                         LogWarning($"[Client] Unknown message type: {type}");
                         break;
@@ -210,7 +214,7 @@ namespace MultiCraft.Scripts.Engine.Network
         {
             string playerId = data.GetProperty("player_id").GetString();
             Vector3 position = JsonToVector3(data.GetProperty("position"));
-            
+
             UiManager.Instance.ChatWindow.commandReader.PrintLog($"{playerId}: Зашел на сервер");
 
             if (playerId != null && !_otherPlayers.ContainsKey(playerId) && playerId != playerName)
@@ -225,11 +229,22 @@ namespace MultiCraft.Scripts.Engine.Network
         private void OnPlayerMoved(JsonElement data)
         {
             string playerId = data.GetProperty("player_id").GetString();
-            Vector3 position = JsonToVector3(data.GetProperty("position"));
-
+            Vector3 targetPosition = JsonToVector3(data.GetProperty("position"));
+            
             if (playerId != null && _otherPlayers.TryGetValue(playerId, out var player))
             {
-                player.transform.position = position;
+                Animator playerAnimator = player.animator;
+                float smoothSpeed = 0.1f; 
+                Vector3 velocity = Vector3.zero;
+                
+                player.transform.position =
+                    Vector3.SmoothDamp(player.transform.position, targetPosition, ref velocity, smoothSpeed);
+
+                Vector3 movement = velocity; 
+
+                playerAnimator.SetFloat(VelocityX, movement.x);
+                playerAnimator.SetFloat(VelocityY, movement.y);
+                playerAnimator.SetFloat(VelocityZ, movement.z);
             }
         }
 
@@ -289,12 +304,12 @@ namespace MultiCraft.Scripts.Engine.Network
 
             NetworkWorld.instance.UpdateBlock(position, newBlockType);
         }
-        
+
         private void HandleDamage(JsonElement data)
         {
             var attackTarget = data.GetProperty("attack_target").ToString();
             var damage = int.Parse(data.GetProperty("damage").ToString());
-            
+
             _otherPlayers[attackTarget].health.TakeDamage(damage);
         }
 
@@ -324,7 +339,7 @@ namespace MultiCraft.Scripts.Engine.Network
         }
 
         #endregion
-        
+
         #region HandleChunks
 
         private void HandleChunkData(JsonElement data)
@@ -561,6 +576,7 @@ namespace MultiCraft.Scripts.Engine.Network
                 chat_massage = massage
             });
         }
+
         public void SendBlockPlaced(Vector3 position, int blockType)
         {
             SendMessageToServer(new
@@ -586,7 +602,7 @@ namespace MultiCraft.Scripts.Engine.Network
                 damage,
             });
         }
-        
+
         public void SendBlockDestroyed(Vector3 position)
         {
             SendMessageToServer(new
